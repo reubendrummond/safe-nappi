@@ -1,13 +1,17 @@
-import React, { useState } from "react";
+import React, {useEffect, useState} from "react";
 import { UnsafeUserRes } from "./api/unsafeUser";
 import {jsonFetch} from "safe-nappi";
 
 async function fetch() {
-    const res = await jsonFetch("");
+    return await jsonFetch("/api/users");
 }
 
 const UnsafeUser = () => {
-  const [userRes, setUserRes] = useState<UnsafeUserRes | null>(null);
+  const [userRes, setUserRes] = useState<Awaited<ReturnType<typeof fetch>> | null>(null);
+
+  useEffect(() => {
+      fetch().then(res => setUserRes(res));
+  }, []);
 
   return (
     <div>{userRes ? <pre>{JSON.stringify(userRes)}</pre> : "Loading..."}</div>

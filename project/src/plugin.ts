@@ -52,18 +52,17 @@ function getApiUrl(path: string) {
     };
 }
 
-function getApiMap(path: string) {
+function getApiPaths(path: string) {
     const {fullPath, metadata} = getApiUrl(path);
-
-    const type = `InferResponse<typeof ${safifyIdentifier(path)}>`;
 
     if (metadata.hasDynamicRoutes) {
         return [
-            `[_: \`${fullPath}\`]: ${type}`,
-            `["${metadata.fullPathWithDynamic}"]: never`
+            fullPath
         ];
     } else {
-        return `[\`${fullPath}\`]: ${type}`;
+        return [
+            fullPath
+        ];
     }
 }
 
@@ -78,14 +77,12 @@ export function nappiPlugin(baseConfig: NextConfig, config: NappiPluginConfig = 
         .map(file => file.replace(/\..+$/, ""));
 
     const sourceFile = [
-        `declare module "${name}" {`,
         "import { NextApiHandler } from \"next\";",
         ...files.map(path => `import type {default as ${safifyIdentifier(path)}} from "${posix.join(tsRelativeToApi, path)}";`),
-        "export type InferResponse<Handler> = Handler extends NextApiHandler<infer Response> ? Response : never;",
-        "type SafeNappiMapping = {",
-        ...files.flatMap(path => getApiMap(path)).map(line => line + ";"),
-        "}",
-        "export function jsonFetch<Path extends keyof SafeNappiMapping>(path: Path): Promise<SafeNappiMapping[Path]>;",
+        `declare module "${name}" {`,
+        ...files.flatMap(path => getApiPaths(path).map(apiPath =>
+            `export function jsonFetch(path: \`${apiPath}\`): Promise<typeof ${safifyIdentifier(path)} extends NextApiHandler<infer Response> ? Response : never>;`
+        )),
         "}"
     ].join("\n");
 
