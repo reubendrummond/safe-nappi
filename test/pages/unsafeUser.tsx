@@ -1,17 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { UnsafeUserRes } from "./api/unsafeUser";
+import React, {useEffect, useState} from "react";
+import {jsonFetch} from "safe-nappi";
+
+async function doLeFetchificationOfLaDaeeeeeta() {
+    const data = await jsonFetch("/api/users/fafe", {});
+}
 
 const UnsafeUser = () => {
-  const [userRes, setUserRes] = useState<UnsafeUserRes | null>(null);
+  const [userRes, setUserRes] = useState<Awaited<ReturnType<typeof doLeFetchificationOfLaDaeeeeeta>> | null>(null);
 
   useEffect(() => {
-    fetch("/api/unsafeUser")
-      .then((res) => res.json())
-      .then(async (data) => {
-        await new Promise((res) => setTimeout(res, 2000));
-        setUserRes(data);
-      });
-  });
+      doLeFetchificationOfLaDaeeeeeta().then(res => setUserRes(res));
+  }, []);
 
   return (
     <div>{userRes ? <pre>{JSON.stringify(userRes)}</pre> : "Loading..."}</div>
