@@ -1,0 +1,1 @@
+export {nappiPlugin} from "./plugin";
