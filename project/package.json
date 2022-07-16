@@ -1,0 +1,6 @@
+{
+    "name": "safe-nappi",
+    "devDependencies": {
+        "tsup": "^6.1.3"
+    }
+}
