@@ -34,6 +34,10 @@ const jsonFetch = async <T extends keyof ApiPathMap>(
   return data as ApiPathMap[T];
 };
 
+jsonFetch("/api/users/34").then((res) => {
+  res.dynamic;
+});
+
 jsonFetch("/api/users").then((res) => {});
 
 jsonFetch("/api/users").then((usersRes) => {
