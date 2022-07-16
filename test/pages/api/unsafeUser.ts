@@ -1,5 +1,5 @@
-import type { NextApiRequest, NextApiResponse, NextApiHandler } from "next";
-import { StandardResponse } from "../../lib/shared";
+import type { NextApiRequest, NextApiResponse } from "next";
+import { StandardResponse } from "../../lib/types/shared";
 
 export type UnsafeUserRes = StandardResponse<{
   id: number;

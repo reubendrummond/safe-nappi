@@ -9,7 +9,7 @@ interface SuccessResponse<T extends {}> {
 interface ErrorResponse {
   success: false;
   error: {
-    statud: number;
+    status: number;
     message: string;
   };
 }
