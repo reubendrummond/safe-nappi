@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from "react";
-import { UnsafeUserRes } from "./api/unsafeUser";
-import {jsonFetch, ApiResponse} from "safe-nappi";
+import {jsonFetch} from "safe-nappi";
 
-async function fetch() {
-    return await jsonFetch("/api/users/somethingElse");
+async function doLeFetchificationOfLaDaeeeeeta() {
+    const data = await jsonFetch("/api/users/fafe", {});
 }
 
 const UnsafeUser = () => {
-  const [userRes, setUserRes] = useState<Awaited<ReturnType<typeof fetch>> | null>(null);
+  const [userRes, setUserRes] = useState<Awaited<ReturnType<typeof doLeFetchificationOfLaDaeeeeeta>> | null>(null);
 
   useEffect(() => {
-      fetch().then(res => setUserRes(res));
+      doLeFetchificationOfLaDaeeeeeta().then(res => setUserRes(res));
   }, []);
 
   return (

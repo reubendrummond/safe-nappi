@@ -53,17 +53,27 @@ function getApiUrl(path: string) {
 }
 
 function getApiPaths(path: string) {
-    const {fullPath, metadata} = getApiUrl(path);
+    const {fullPath} = getApiUrl(path);
 
-    if (metadata.hasDynamicRoutes) {
-        return [
-            fullPath
-        ];
-    } else {
-        return [
-            fullPath
-        ];
-    }
+    return [
+        fullPath
+    ];
+}
+
+function getResponseType(path: string) {
+    const id = safifyIdentifier(path);
+    return `typeof ${id} extends NextApiHandler<infer NextResponse>
+  ? NextResponse
+  : typeof ${id} extends SafeNappiApiHandler<infer SnResponse, string>
+  ? SnResponse
+  : never`;
+}
+
+function inferQueryParams(path: string) {
+    const id = safifyIdentifier(path);
+    return `typeof ${id} extends SafeNappiApiHandler<any, infer QueryParams>
+  ? QueryParams
+  : never`;
 }
 
 export function nappiPlugin(baseConfig: NextConfig, config: NappiPluginConfig = {}): NextConfig {
@@ -80,14 +90,16 @@ export function nappiPlugin(baseConfig: NextConfig, config: NappiPluginConfig = 
         const sourceFile = [
             "import { NextApiHandler } from \"next\";",
             ...files.map(path => `import type {default as ${safifyIdentifier(path)}} from "${posix.join(tsRelativeToApi, path)}";`),
+            `import {SafeNappiApiHandler} from "${name}/dist/real-types";`,
             `declare module "${name}" {`,
+            `export * from "${name}/dist/real-types";`,
             ...files.flatMap(path => getApiPaths(path).map(apiPath =>
-                `export function jsonFetch(path: \`${apiPath}\`): Promise<typeof ${safifyIdentifier(path)} extends NextApiHandler<infer Response> ? Response : never>;`
+                `export function jsonFetch(path: \`${apiPath}\`, query?: (${inferQueryParams(path)}) extends never ? undefined : {[Key in ${inferQueryParams(path)}]?: string}): Promise<${getResponseType(path)}>;`
             )),
             "export type ApiResponse<Path extends ",
             files.flatMap(path => getApiPaths(path).map(apiPath => `\`${apiPath}\``)).join(" | "),
             "> =",
-            ...files.flatMap(path => getApiPaths(path).map(apiPath => `Path extends \`${apiPath}\` ? typeof ${safifyIdentifier(path)} extends NextApiHandler<infer Response> ? Response : never :`)),
+            ...files.flatMap(path => getApiPaths(path).map(apiPath => `Path extends \`${apiPath}\` ? ${getResponseType(path)} :`)),
             "never",
             "}"
         ].join("\n");

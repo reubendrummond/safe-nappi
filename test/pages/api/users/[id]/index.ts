@@ -1,8 +1,8 @@
-import { NextApiHandler } from "next";
 import { User } from "lib/types/backend";
 import { StandardResponse } from "lib/types/shared";
+import {SafeNappiApiHandler} from "safe-nappi";
 
-const handler: NextApiHandler<StandardResponse<{ user: User }>> = (
+const handler: SafeNappiApiHandler<StandardResponse<{ user: User }>, "id"> = (
   req,
   res
 ) => {
