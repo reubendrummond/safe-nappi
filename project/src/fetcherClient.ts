@@ -26,7 +26,7 @@ type ApiPathMap = {
 };
 
 // wrapper of fetch which only accepts valid keys
-const jsonFetch = async <T extends keyof ApiPathMap>(
+export const jsonFetch = async <T extends keyof ApiPathMap>(
   path: T
 ): Promise<ApiPathMap[T]> => {
   const res = await fetch(path);
