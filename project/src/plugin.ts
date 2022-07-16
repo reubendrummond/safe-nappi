@@ -71,23 +71,32 @@ export function nappiPlugin(baseConfig: NextConfig, config: NappiPluginConfig = 
 
     const tsRelativeToApi = posix.relative(posix.dirname(tsOut), baseDir);
 
-    const files = recursiveReaddir(baseDir)
-        .filter(file => file.endsWith(".ts") || file.endsWith(".tsx"))
-        .map(file => posix.relative(baseDir + "/", file))
-        .map(file => file.replace(/\..+$/, ""));
+    setInterval(() => {
+        const files = recursiveReaddir(baseDir)
+            .filter(file => file.endsWith(".ts") || file.endsWith(".tsx"))
+            .map(file => posix.relative(baseDir + "/", file))
+            .map(file => file.replace(/\..+$/, ""));
 
-    const sourceFile = [
-        "import { NextApiHandler } from \"next\";",
-        ...files.map(path => `import type {default as ${safifyIdentifier(path)}} from "${posix.join(tsRelativeToApi, path)}";`),
-        `declare module "${name}" {`,
-        ...files.flatMap(path => getApiPaths(path).map(apiPath =>
-            `export function jsonFetch(path: \`${apiPath}\`): Promise<typeof ${safifyIdentifier(path)} extends NextApiHandler<infer Response> ? Response : never>;`
-        )),
-        "}"
-    ].join("\n");
+        const sourceFile = [
+            "import { NextApiHandler } from \"next\";",
+            ...files.map(path => `import type {default as ${safifyIdentifier(path)}} from "${posix.join(tsRelativeToApi, path)}";`),
+            `declare module "${name}" {`,
+            ...files.flatMap(path => getApiPaths(path).map(apiPath =>
+                `export function jsonFetch(path: \`${apiPath}\`): Promise<typeof ${safifyIdentifier(path)} extends NextApiHandler<infer Response> ? Response : never>;`
+            )),
+            "export type ApiResponse<Path extends ",
+            files.flatMap(path => getApiPaths(path).map(apiPath => `\`${apiPath}\``)).join(" | "),
+            "> =",
+            ...files.flatMap(path => getApiPaths(path).map(apiPath => `Path extends \`${apiPath}\` ? typeof ${safifyIdentifier(path)} extends NextApiHandler<infer Response> ? Response : never :`)),
+            "never",
+            "}"
+        ].join("\n");
 
-    mkdirSync(posix.dirname(tsOut), {recursive: true});
-    writeFileSync(tsOut, sourceFile);
+        mkdirSync(posix.dirname(tsOut), {recursive: true});
+        writeFileSync(tsOut, sourceFile);
+    }, 2000);
 
     return baseConfig;
 }
+
+

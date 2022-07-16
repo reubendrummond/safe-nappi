@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
 import { UnsafeUserRes } from "./api/unsafeUser";
-import {jsonFetch} from "safe-nappi";
+import {jsonFetch, ApiResponse} from "safe-nappi";
 
 async function fetch() {
-    return await jsonFetch("/api/users");
+    return await jsonFetch("/api/users/somethingElse");
 }
 
 const UnsafeUser = () => {
