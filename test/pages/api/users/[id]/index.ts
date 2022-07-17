@@ -2,10 +2,12 @@ import { User } from "lib/types/backend";
 import { StandardResponse } from "lib/types/shared";
 import {SafeNappiApiHandler} from "safe-nappi";
 
-const handler: SafeNappiApiHandler<StandardResponse<{ user: User }>, "id"> = (
+const handler: SafeNappiApiHandler<StandardResponse<{ user: User }>, "id", {foo: "bar"}> = (
   req,
   res
 ) => {
+  console.log(req.body);
+
   const id = req.query.id;
   if (typeof id !== "string")
     return res.status(400).json({

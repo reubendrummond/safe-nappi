@@ -76,6 +76,11 @@ function inferQueryParams(path: string) {
   : never`;
 }
 
+function inferBody(path: string) {
+    const id = safifyIdentifier(path);
+    return `typeof ${id} extends SafeNappiApiHandler<any, string, infer Body> ? Body : unknown`
+}
+
 export function nappiPlugin(baseConfig: NextConfig, config: NappiPluginConfig = {}): NextConfig {
     const {baseDir = getBaseDir(), tsOut = "types/nappi.d.ts"} = config;
 
@@ -94,7 +99,7 @@ export function nappiPlugin(baseConfig: NextConfig, config: NappiPluginConfig = 
             `declare module "${name}" {`,
             `export * from "${name}/dist/real-types";`,
             ...files.flatMap(path => getApiPaths(path).map(apiPath =>
-                `export function jsonFetch(path: \`${apiPath}\`, query?: (${inferQueryParams(path)}) extends never ? undefined : {[Key in ${inferQueryParams(path)}]?: string}): Promise<${getResponseType(path)}>;`
+                `export function jsonFetch(path: \`${apiPath}\`, options?: JsonFetchOptions<${inferQueryParams(path)}, ${inferBody(path)}>): Promise<${getResponseType(path)}>;`
             )),
             "export type ApiResponse<Path extends ",
             files.flatMap(path => getApiPaths(path).map(apiPath => `\`${apiPath}\``)).join(" | "),

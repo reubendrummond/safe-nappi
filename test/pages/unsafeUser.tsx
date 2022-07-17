@@ -1,8 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { jsonFetch } from "safe-nappi";
+import {jsonFetch} from "safe-nappi";
 
 async function doLeFetchificationOfLaDaeeeeeta() {
-    const data = await jsonFetch("/api/users/fafe?ip=foo&foo=baz");
+    const data = await jsonFetch("/api/users/fafe", {
+        body: {
+            foo: "bar"
+        },
+        query: {
+            id: ""
+        },
+        init: {
+
+        }
+    });
 
 
 }
