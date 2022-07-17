@@ -2,9 +2,9 @@ import { NextApiHandler } from "next";
 import type {default as unsafeUser} from "../pages/api/unsafeUser";
 import type {default as users_index} from "../pages/api/users/index";
 import type {default as users_id_index} from "../pages/api/users/[id]/index";
-import {SafeNappiApiHandler} from "safe-nappi/dist/real-types";
+import {SafeNappiApiHandler} from "safe-nappi/real-types";
 declare module "safe-nappi" {
-export * from "safe-nappi/dist/real-types";
+export * from "safe-nappi/real-types";
 export function jsonFetch(path: `/api/unsafeUser`, options?: JsonFetchOptions<typeof unsafeUser extends SafeNappiApiHandler<any, infer QueryParams>
   ? QueryParams
   : never, typeof unsafeUser extends SafeNappiApiHandler<any, string, infer Body> ? Body : unknown>): Promise<typeof unsafeUser extends NextApiHandler<infer NextResponse>

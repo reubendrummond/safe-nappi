@@ -95,9 +95,9 @@ export function nappiPlugin(baseConfig: NextConfig, config: NappiPluginConfig = 
         const sourceFile = [
             "import { NextApiHandler } from \"next\";",
             ...files.map(path => `import type {default as ${safifyIdentifier(path)}} from "${posix.join(tsRelativeToApi, path)}";`),
-            `import {SafeNappiApiHandler} from "${name}/dist/real-types";`,
+            `import {SafeNappiApiHandler} from "${name}/real-types";`,
             `declare module "${name}" {`,
-            `export * from "${name}/dist/real-types";`,
+            `export * from "${name}/real-types";`,
             ...files.flatMap(path => getApiPaths(path).map(apiPath =>
                 `export function jsonFetch(path: \`${apiPath}\`, options?: JsonFetchOptions<${inferQueryParams(path)}, ${inferBody(path)}>): Promise<${getResponseType(path)}>;`
             )),

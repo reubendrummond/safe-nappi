@@ -2,19 +2,11 @@ import React, { useEffect, useState } from "react";
 import {jsonFetch} from "safe-nappi";
 
 async function doLeFetchificationOfLaDaeeeeeta() {
-    const data = await jsonFetch("/api/users/fafe", {
+    const data = await jsonFetch("/api/users/foo", {
         body: {
-            foo: "bar"
-        },
-        query: {
-            id: ""
-        },
-        init: {
-
+            foo: ""
         }
     });
-
-
 }
 
 const UnsafeUser = () => {
@@ -31,19 +23,4 @@ const UnsafeUser = () => {
   );
 };
 
-Array.prototype.flat;
-
 export default UnsafeUser;
-
-type OptionalAssignment = `=${string}` | "";
-
-type QueryUrlPart<Name extends string> = `${Name}${OptionalAssignment}`;
-type QueryUrl<Source extends string, Identifiers extends string> = Source extends `${QueryUrlPart<Identifiers>}${infer Rest}`
-    ? Rest extends `&${infer OtherParams}`
-        ? QueryUrl<Rest, Identifiers>
-        : `(error:1) ${Source}`
-    : `(error:2) ${Source}`;
-
-type Foo = QueryUrl<"foo&baz", "foo" | "baz">;
-
-declare const bla: Foo;
