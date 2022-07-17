@@ -100,7 +100,12 @@ export function nappiPlugin(baseConfig: NextConfig, config: NappiPluginConfig = 
             files.flatMap(path => getApiPaths(path).map(apiPath => `\`${apiPath}\``)).join(" | "),
             "> =",
             ...files.flatMap(path => getApiPaths(path).map(apiPath => `Path extends \`${apiPath}\` ? ${getResponseType(path)} :`)),
-            "never",
+            "never;",
+            "export type ApiMap = {",
+            "[Key in ",
+            files.flatMap(path => getApiPaths(path).map(path => `\`${path}\``)).join(" | "),
+            "]: ApiResponse<Key>",
+            "}",
             "}"
         ].join("\n");
 
@@ -110,5 +115,3 @@ export function nappiPlugin(baseConfig: NextConfig, config: NappiPluginConfig = 
 
     return baseConfig;
 }
-
-

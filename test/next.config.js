@@ -1,4 +1,4 @@
-const {nappiPlugin} = require("safe-nappi");
+const {nappiPlugin} = require("safe-nappi/plugin");
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

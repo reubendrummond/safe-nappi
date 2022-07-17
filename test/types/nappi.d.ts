@@ -50,5 +50,10 @@ Path extends `/api/users/${string}` ? typeof users_id_index extends NextApiHandl
   : typeof users_id_index extends SafeNappiApiHandler<infer SnResponse, string>
   ? SnResponse
   : never :
-never
+never;
+export type ApiMap = {
+[Key in 
+`/api/unsafeUser` | `/api/users` | `/api/users/${string}`
+]: ApiResponse<Key>
+}
 }

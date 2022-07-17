@@ -7,7 +7,7 @@ const handler: SafeNappiApiHandler<StandardResponse<{ user: User }>, "id"> = (
   res
 ) => {
   const id = req.query.id;
-  if (!id)
+  if (typeof id !== "string")
     return res.status(400).json({
       success: false,
       error: {
